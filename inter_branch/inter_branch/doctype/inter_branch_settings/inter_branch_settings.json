@@ -1,0 +1,172 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-08-16 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "section_break_companies",
+  "companies",
+  "section_break_behaviour",
+  "handle_direct_stock_entry",
+  "auto_tag_branch_from_warehouse",
+  "warehouse_is_authoritative",
+  "propagate_header_branch",
+  "column_break_behaviour",
+  "trusted_roles",
+  "section_break_naming",
+  "due_from_prefix",
+  "due_to_prefix",
+  "receivable_group_label",
+  "payable_group_label",
+  "column_break_naming",
+  "service_recovered_label",
+  "service_charged_label"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enable Inter-Branch Postings"
+  },
+  {
+   "fieldname": "section_break_companies",
+   "fieldtype": "Section Break",
+   "label": "Companies"
+  },
+  {
+   "fieldname": "companies",
+   "fieldtype": "Table",
+   "label": "Companies",
+   "options": "Inter Branch Company Setting"
+  },
+  {
+   "fieldname": "section_break_behaviour",
+   "fieldtype": "Section Break",
+   "label": "Behaviour"
+  },
+  {
+   "default": "1",
+   "description": "Post a companion Journal Entry for cross-branch Material Transfer Stock Entries created outside Inter Branch Stock Transfer.",
+   "fieldname": "handle_direct_stock_entry",
+   "fieldtype": "Check",
+   "label": "Handle Direct Stock Entries"
+  },
+  {
+   "default": "1",
+   "fieldname": "auto_tag_branch_from_warehouse",
+   "fieldtype": "Check",
+   "label": "Set Branch from Warehouse"
+  },
+  {
+   "default": "1",
+   "description": "On stock documents, replace a row's Branch with the one mapped to its warehouse.",
+   "fieldname": "warehouse_is_authoritative",
+   "fieldtype": "Check",
+   "label": "Warehouse Overrides Chosen Branch"
+  },
+  {
+   "default": "1",
+   "fieldname": "propagate_header_branch",
+   "fieldtype": "Check",
+   "label": "Propagate Header Branch to Items"
+  },
+  {
+   "fieldname": "column_break_behaviour",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "System Manager\nStock Manager",
+   "description": "One role per line. Users holding any of these keep the Branch they picked.",
+   "fieldname": "trusted_roles",
+   "fieldtype": "Small Text",
+   "label": "Roles Exempt from Branch Auto-correction"
+  },
+  {
+   "fieldname": "section_break_naming",
+   "fieldtype": "Section Break",
+   "label": "Account Naming"
+  },
+  {
+   "default": "Due from",
+   "fieldname": "due_from_prefix",
+   "fieldtype": "Data",
+   "label": "Due-from Prefix"
+  },
+  {
+   "default": "Due to",
+   "fieldname": "due_to_prefix",
+   "fieldtype": "Data",
+   "label": "Due-to Prefix"
+  },
+  {
+   "default": "Inter-Branch Receivable",
+   "fieldname": "receivable_group_label",
+   "fieldtype": "Data",
+   "label": "Receivable Group Label"
+  },
+  {
+   "default": "Inter-Branch Payable",
+   "fieldname": "payable_group_label",
+   "fieldtype": "Data",
+   "label": "Payable Group Label"
+  },
+  {
+   "fieldname": "column_break_naming",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Inter-Branch Service Recovered",
+   "fieldname": "service_recovered_label",
+   "fieldtype": "Data",
+   "label": "Service Recovered Label"
+  },
+  {
+   "default": "Inter-Branch Service Charged",
+   "fieldname": "service_charged_label",
+   "fieldtype": "Data",
+   "label": "Service Charged Label"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-08-16 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Inter Branch",
+ "name": "Inter Branch Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

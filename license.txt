@@ -1,0 +1,8 @@
+Copyright (c) 2026 Enfono Technologies
+
+All rights reserved.
+
+This software and its source code are the confidential and proprietary property
+of Enfono Technologies. No part of it may be copied, distributed, sublicensed,
+or used outside an Enfono Technologies engagement without prior written
+permission.

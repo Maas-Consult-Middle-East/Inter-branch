@@ -1,0 +1,130 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-08-16 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "description",
+  "service_item",
+  "column_break_dates",
+  "from_date",
+  "to_date",
+  "section_break_pricing",
+  "hours",
+  "rate",
+  "column_break_cost",
+  "cost_amount",
+  "markup_percentage",
+  "section_break_amount",
+  "amount",
+  "column_break_cc",
+  "cost_center"
+ ],
+ "fields": [
+  {
+   "columns": 3,
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Service Description",
+   "reqd": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "service_item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "column_break_dates",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date"
+  },
+  {
+   "fieldname": "section_break_pricing",
+   "fieldtype": "Section Break"
+  },
+  {
+   "columns": 1,
+   "depends_on": "eval:parent.pricing_basis=='Hours x Rate'",
+   "fieldname": "hours",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Hours"
+  },
+  {
+   "columns": 1,
+   "depends_on": "eval:parent.pricing_basis=='Hours x Rate'",
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Rate per Hour",
+   "options": "Company:company:default_currency"
+  },
+  {
+   "fieldname": "column_break_cost",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:parent.pricing_basis=='Cost Plus Percentage'",
+   "fieldname": "cost_amount",
+   "fieldtype": "Currency",
+   "label": "Cost Incurred",
+   "options": "Company:company:default_currency"
+  },
+  {
+   "depends_on": "eval:parent.pricing_basis=='Cost Plus Percentage'",
+   "fieldname": "markup_percentage",
+   "fieldtype": "Float",
+   "label": "Mark-up (%)"
+  },
+  {
+   "fieldname": "section_break_amount",
+   "fieldtype": "Section Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_cc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-08-16 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Inter Branch",
+ "name": "Inter Branch Service Settlement Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

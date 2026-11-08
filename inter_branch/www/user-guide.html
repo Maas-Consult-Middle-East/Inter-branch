@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inter Branch — User Guide</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%231a1a2e'/%3E%3Cg stroke='%233b82f6' stroke-width='1.8' fill='none' stroke-linecap='round'%3E%3Cpath d='M5 19V9h4v10'/%3E%3Cpath d='M15 19V5h4v14'/%3E%3Cpath d='M3 19h18'/%3E%3Cpath d='M10 12h4'/%3E%3C/g%3E%3C/svg%3E" />
+  <style>
+    /* ── Reset & Base ──────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #1a1a2e;
+      background: #f5f6fa;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ────────────────────────────────────────────────────────── */
+    .sidebar {
+      width: 260px;
+      min-height: 100vh;
+      background: #1a1a2e;
+      color: #c8cfe8;
+      position: fixed;
+      top: 0; left: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+    .sidebar-brand {
+      padding: 24px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .sidebar-brand .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .sidebar-brand .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .sidebar-brand .logo-icon svg { width: 20px; height: 20px; stroke: #fff; fill: none; }
+    .sidebar-brand h1 { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+    .sidebar-brand p  { font-size: 11px; color: #6b7299; margin-top: 2px; }
+
+    .sidebar-nav { padding: 12px 0; flex: 1; }
+    .nav-group-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; color: #4a5180;
+      padding: 12px 20px 4px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 20px;
+      color: #9ba3c8;
+      text-decoration: none;
+      font-size: 13.5px;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .nav-item:hover, .nav-item.active {
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      border-left-color: #2563eb;
+    }
+    .nav-item svg { width: 16px; height: 16px; stroke: currentColor; fill: none; flex-shrink: 0; }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 11px;
+      color: #4a5180;
+    }
+    .sidebar-footer a { color: #6b7299; text-decoration: none; }
+
+    /* ── Main Content ───────────────────────────────────────────────────── */
+    .main {
+      margin-left: 260px;
+      flex: 1;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+      padding: 48px 48px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::after {
+      content: '';
+      position: absolute;
+      right: -60px; top: -60px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(37,99,235,0.3) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .page-header .tag {
+      display: inline-block;
+      background: rgba(37,99,235,0.3);
+      border: 1px solid rgba(37,99,235,0.5);
+      color: #93c5fd;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .page-header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+    .page-header p  { font-size: 15px; color: #93afd4; max-width: 560px; }
+    .page-header .meta {
+      display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap;
+    }
+    .page-header .meta-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: #64748b;
+    }
+    .page-header .meta-item svg { width: 14px; height: 14px; stroke: #4a7fb5; fill: none; }
+
+    .content-body { padding: 40px 48px; max-width: 900px; }
+
+    /* ── Section ───────────────────────────────────────────────────────── */
+    .section { margin-bottom: 56px; scroll-margin-top: 24px; }
+    .section-title {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 22px; font-weight: 800;
+      color: #1a1a2e; margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+    .section-title .icon-wrap {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-title .icon-wrap svg { width: 20px; height: 20px; stroke: #fff; fill: none; }
+    .section-subtitle {
+      color: #64748b; font-size: 14px; margin-bottom: 24px;
+      padding-left: 50px;
+    }
+
+    /* ── Flow Steps ─────────────────────────────────────────────────────── */
+    .steps { position: relative; }
+    .step {
+      display: flex; gap: 20px;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .step-left {
+      display: flex; flex-direction: column; align-items: center;
+      flex-shrink: 0; width: 36px;
+    }
+    .step-num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800;
+      flex-shrink: 0; position: relative; z-index: 1;
+    }
+    .step-line {
+      width: 2px; flex: 1; min-height: 20px;
+      background: #e2e8f0; margin-top: 4px; margin-bottom: 4px;
+    }
+    .step:last-child .step-line { display: none; }
+    .step-body {
+      background: #fff;
+      border: 1px solid #e8ecf4;
+      border-radius: 12px;
+      padding: 16px 20px;
+      flex: 1;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .step-body h3 {
+      font-size: 14px; font-weight: 700;
+      color: #1a1a2e; margin-bottom: 8px;
+    }
+    .step-body p { font-size: 13.5px; color: #475569; margin-bottom: 6px; }
+    .step-body ul { padding-left: 18px; }
+    .step-body li { font-size: 13.5px; color: #475569; margin-bottom: 3px; }
+    .step-body li strong { color: #1e293b; }
+
+    /* ── Info box ───────────────────────────────────────────────────────── */
+    .info-box {
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin: 12px 0;
+      font-size: 13px;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .info-box svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+    .info-box.blue  { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+    .info-box.blue svg { stroke: #2563eb; fill: none; }
+    .info-box.green { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+    .info-box.green svg { stroke: #16a34a; fill: none; }
+    .info-box.amber { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+    .info-box.amber svg { stroke: #d97706; fill: none; }
+    .info-box.red   { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+    .info-box.red svg { stroke: #dc2626; fill: none; }
+
+    /* ── Field Table ─────────────────────────────────────────────────────── */
+    .field-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+    .field-table th {
+      background: #f1f5f9;
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 700;
+      color: #475569;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .field-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+    }
+    .field-table tr:last-child td { border-bottom: none; }
+    .field-table tr:hover td { background: #f8fafc; }
+    .field-table .field-name { font-weight: 600; color: #1e293b; }
+    .field-table .field-auto {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #eff6ff; color: #1d4ed8;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+      padding: 2px 6px; border-radius: 4px; text-transform: uppercase;
+    }
+    .field-table .field-req {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #fef2f2; color: #dc2626;
+      font-size: 10px; font-weight: 700;
+      padding: 2px 6px; border-radius: 4px;
+    }
+
+    /* ── Status Badges ───────────────────────────────────────────────────── */
+    .badge-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 6px 14px; border-radius: 20px;
+      font-size: 13px; font-weight: 600;
+    }
+    .badge .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .badge.grey   { background: #f1f5f9; color: #475569; }
+    .badge.grey .dot   { background: #94a3b8; }
+    .badge.blue   { background: #eff6ff; color: #1e40af; }
+    .badge.blue .dot   { background: #3b82f6; }
+    .badge.purple { background: #f5f3ff; color: #5b21b6; }
+    .badge.purple .dot { background: #7c3aed; }
+    .badge.orange { background: #fffbeb; color: #92400e; }
+    .badge.orange .dot { background: #f59e0b; }
+    .badge.green  { background: #f0fdf4; color: #166534; }
+    .badge.green .dot  { background: #16a34a; }
+    .badge.red    { background: #fef2f2; color: #991b1b; }
+    .badge.red .dot    { background: #ef4444; }
+
+    /* ── Report Cards ────────────────────────────────────────────────────── */
+    .report-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin: 16px 0; }
+    .report-card {
+      background: #fff;
+      border: 1px solid #e8ecf4;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .report-card .report-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 12px;
+    }
+    .report-card .report-icon svg { width: 22px; height: 22px; stroke: #fff; fill: none; }
+    .report-card h3 { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
+    .report-card p  { font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 10px; }
+    .report-card .filters-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .filter-tag {
+      display: inline-block;
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin: 2px;
+    }
+
+    /* ── Navigation table ────────────────────────────────────────────────── */
+    .nav-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    .nav-table td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; }
+    .nav-table tr:last-child td { border-bottom: none; }
+    .nav-table .path {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 12px;
+      color: #2563eb;
+      background: #eff6ff;
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+    .nav-table tr:hover td { background: #f8fafc; }
+
+    /* ── Flow Diagram ────────────────────────────────────────────────────── */
+    .flow-diagram {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+    }
+    .flow-node {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .flow-arrow {
+      font-size: 18px;
+      color: #94a3b8;
+    }
+
+    /* ── Callout blocks ──────────────────────────────────────────────────── */
+    .callout {
+      border-left: 4px solid;
+      padding: 14px 18px;
+      border-radius: 0 10px 10px 0;
+      margin: 16px 0;
+      font-size: 13.5px;
+    }
+    .callout.blue  { border-color: #3b82f6; background: #eff6ff; color: #1e3a8a; }
+    .callout.green { border-color: #16a34a; background: #f0fdf4; color: #14532d; }
+    .callout h4    { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+
+    /* ── Code ────────────────────────────────────────────────────────────── */
+    code {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      background: #f1f5f9;
+      color: #0f172a;
+      font-size: 12.5px;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    /* ── Access box ──────────────────────────────────────────────────────── */
+    .access-box {
+      background: #1a1a2e;
+      border-radius: 12px;
+      padding: 24px;
+      color: #e2e8f0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .access-box .access-item label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #4a5180;
+      margin-bottom: 4px;
+    }
+    .access-box .access-item value {
+      display: block;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 14px;
+      color: #93c5fd;
+    }
+    .access-box .access-item value.url { color: #34d399; text-decoration: none; }
+
+    /* ── Roles table ────────────────────────────────────────────────────── */
+    .roles-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .roles-table th {
+      background: #1a1a2e; color: #9ba3c8;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .roles-table td { padding: 9px 14px; border-bottom: 1px solid #f1f5f9; }
+    .roles-table tr:hover td { background: #f8fafc; }
+    .perm-yes { color: #16a34a; font-weight: 700; }
+    .perm-no  { color: #d1d5db; }
+
+    /* ── Divider ─────────────────────────────────────────────────────────── */
+    .divider { border: none; border-top: 1px solid #e8ecf4; margin: 40px 0; }
+
+    /* ── Color coding for section icons ─────────────────────────────────── */
+    .ic-blue   { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .ic-purple { background: linear-gradient(135deg, #7c3aed, #4c1d95); }
+    .ic-teal   { background: linear-gradient(135deg, #0891b2, #0e7490); }
+    .ic-green  { background: linear-gradient(135deg, #16a34a, #14532d); }
+    .ic-amber  { background: linear-gradient(135deg, #d97706, #92400e); }
+    .ic-rose   { background: linear-gradient(135deg, #e11d48, #9f1239); }
+    .ic-indigo { background: linear-gradient(135deg, #4f46e5, #312e81); }
+
+    /* ── Print ───────────────────────────────────────────────────────────── */
+    @media print {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .page-header { background: #1a1a2e !important; -webkit-print-color-adjust: exact; }
+    }
+
+    /* ── Responsive ──────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .sidebar { width: 100%; min-height: auto; position: relative; }
+      .main { margin-left: 0; }
+      .content-body { padding: 24px 20px; }
+      .page-header { padding: 32px 24px; }
+      .access-box { grid-template-columns: 1fr; }
+      .report-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo-row">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" stroke-width="1.8">
+          <path d="M4 21V8a1 1 0 0 1 1-1h5v14"/>
+          <path d="M14 21V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v17"/>
+          <path d="M2 21h20" stroke-linecap="round"/>
+          <path d="M10 12h4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1>Inter Branch</h1>
+    </div>
+    <p>User Guide · ERPNext v15+</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Getting Started</div>
+    <a href="#overview" class="nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      What This App Does
+    </a>
+    <a href="#accounting" class="nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 3v18"/><path d="M5 7h14"/><path d="M5 7l-3 6h6z"/><path d="M19 7l-3 6h6z"/></svg>
+      The Accounting Model
+    </a>
+    <a href="#install" class="nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Install
+    </a>
+
+    <div class="nav-group-label">Configuration</div>
+    <a href="#settings" class="nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6 1.65 1.65 0 0 0 10 3.09V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.36.44.63.82.75H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Inter Branch Settings
+    </a>
+    <a href="#branch-config" class="nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+      Branch Configuration
+    </a>
+    <a href="#preconditions" class="nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Stock Account Rules
+    </a>
+
+    <div class="nav-group-label">Workflows</div>
+    <a href="#stock-transfer" class="nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><path d="M16 3h5v5"/><path d="M21 3l-7 7"/><path d="M8 21H3v-5"/><path d="M3 21l7-7"/></svg>
+      Stock Transfer
+    </a>
+    <a href="#returns" class="nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+      Returns &amp; Cancellation
+    </a>
+    <a href="#service" class="nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      Service Settlement
+    </a>
+    <a href="#automatic" class="nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg>
+      Automatic Postings
+    </a>
+
+    <div class="nav-group-label">Reference</div>
+    <a href="#report" class="nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Reconciliation Report
+    </a>
+    <a href="#roles" class="nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+      Roles &amp; Permissions
+    </a>
+    <a href="#troubleshooting" class="nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Troubleshooting
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    Built by <a href="https://enfono.com">Enfono Technologies</a><br />
+    Proprietary · © Enfono Technologies
+  </div>
+</aside>
+
+<!-- ════════════════════════════════════════════════════════
+     MAIN
+═══════════════════════════════════════════════════════════ -->
+<main class="main">
+
+  <header class="page-header">
+    <span class="tag">User Guide</span>
+    <h1>Inter Branch for ERPNext</h1>
+    <p>
+      One company, several branches. This app books the obligation every
+      cross-branch movement creates, so each branch's own P&amp;L and balance
+      sheet stand up on their own — without inflating consolidated turnover.
+    </p>
+    <div class="meta">
+      <div class="meta-item">
+        <svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        ERPNext v15 – v16
+      </div>
+      <div class="meta-item">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 2l9 4.9v10.2L12 22l-9-4.9V6.9z"/></svg>
+        App: <code>inter_branch</code>
+      </div>
+      <div class="meta-item">
+        <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Requires: frappe + erpnext
+      </div>
+    </div>
+  </header>
+
+  <div class="content-body">
+
+    <!-- ── Overview ─────────────────────────────────────────────── -->
+    <section id="overview">
+      <div class="section-title">
+        <div class="icon-wrap ic-blue">
+          <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </div>
+        What This App Does
+      </div>
+      <p class="section-subtitle">The problem it solves, and the four things it gives you.</p>
+
+      <div class="step-body">
+        <p>
+          Branch A ships stock to Branch B, or does work for it. The company
+          total is always right, but each branch's own books are wrong: A carries
+          a cost B benefited from, and nothing in standard ERPNext records the
+          obligation between them.
+        </p>
+        <p>
+          Inter Branch records it — as a <strong>Due from</strong> /
+          <strong>Due to</strong> pair on the balance sheet, plus (for services) a
+          recharge pair across the P&amp;L boundary.
+        </p>
+      </div>
+
+      <table class="field-table">
+        <thead>
+          <tr><th style="width:34%">What you get</th><th style="width:16%">Type</th><th>What it does</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">Inter Branch Settings</td>
+            <td>Single</td>
+            <td>Per-company cut-over date, bridge branch, parent account groups, recharge accounts, stock-transfer defaults, behaviour switches</td>
+          </tr>
+          <tr>
+            <td class="field-name">Inter Branch Configuration</td>
+            <td>Master · one per branch</td>
+            <td>Asset / liability account heads, recharge overrides, warehouse and cost-centre mappings</td>
+          </tr>
+          <tr>
+            <td class="field-name">Inter Branch Stock Transfer</td>
+            <td>Submittable</td>
+            <td>Stock Entry + companion Journal Entry (+ optional Delivery Note), returns, cancel cascade</td>
+          </tr>
+          <tr>
+            <td class="field-name">Inter Branch Service Settlement</td>
+            <td>Submittable</td>
+            <td>Four-leg recharge Journal Entry; flat, hours × rate, or cost-plus-%</td>
+          </tr>
+          <tr>
+            <td class="field-name">Inter Branch Reconciliation</td>
+            <td>Report</td>
+            <td>Branch × branch matrix with an <strong>Unmatched</strong> column</td>
+          </tr>
+          <tr>
+            <td class="field-name">Journal Entry auto-injection</td>
+            <td>Hook</td>
+            <td>Balances any manual Journal Entry that touches two branches; three or more use the configured bridge branch</td>
+          </tr>
+          <tr>
+            <td class="field-name">Branch tagging</td>
+            <td>Hook</td>
+            <td>Fills the Branch dimension on stock documents from the warehouse mapping</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Accounting model ─────────────────────────────────────── -->
+    <section id="accounting">
+      <div class="section-title">
+        <div class="icon-wrap ic-purple">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 3v18"/><path d="M5 7h14"/><path d="M5 7l-3 6h6z"/><path d="M19 7l-3 6h6z"/></svg>
+        </div>
+        The Accounting Model
+      </div>
+      <p class="section-subtitle">What gets posted, and why a service costs four legs instead of two.</p>
+
+      <h3 style="font-size:15px;font-weight:700;margin:8px 0 6px;">Stock crossing a branch boundary — 2 legs</h3>
+      <p style="font-size:13.5px;color:#475569;">
+        Stock is an asset moving. The stock GL is already written by the Stock
+        Entry; these two legs settle who owes whom.
+      </p>
+      <table class="field-table">
+        <thead><tr><th>Leg</th><th>Account</th><th>Root type</th><th>Branch tag</th></tr></thead>
+        <tbody>
+          <tr><td class="field-name">Dr</td><td>Due from <em>receiver</em></td><td>Asset</td><td>sender</td></tr>
+          <tr><td class="field-name">Cr</td><td>Due to <em>sender</em></td><td>Liability</td><td>receiver</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:15px;font-weight:700;margin:20px 0 6px;">A service crossing a branch boundary — 4 legs</h3>
+      <p style="font-size:13.5px;color:#475569;">
+        A service has no asset: by the time one branch has done the work, the
+        cost is already sunk in the performer's P&amp;L. Two extra legs carry the
+        cost across the boundary.
+      </p>
+      <table class="field-table">
+        <thead><tr><th>Leg</th><th>Account</th><th>Root type</th><th>Branch tag</th></tr></thead>
+        <tbody>
+          <tr><td class="field-name">Cr</td><td>Inter-Branch Service Recovered</td><td>Income</td><td>performer</td></tr>
+          <tr><td class="field-name">Dr</td><td>Due from <em>receiver</em></td><td>Asset</td><td>performer</td></tr>
+          <tr><td class="field-name">Dr</td><td>Inter-Branch Service Charged</td><td>Expense</td><td>receiver</td></tr>
+          <tr><td class="field-name">Cr</td><td>Due to <em>performer</em></td><td>Liability</td><td>receiver</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout blue">
+        <h4>Why not an internal Sales Invoice?</h4>
+        An internal sale inflates consolidated turnover by the recharge amount
+        every time, and has to be eliminated by hand at every close. Recovered
+        and Charged are equal and opposite by construction, so the elimination
+        is structural.
+      </div>
+
+      <div class="info-box amber">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div>
+          <strong>Service Recovered is Income root-type, but it is not turnover.</strong>
+          The app stamps <code>custom_exclude_from_turnover</code> on the account.
+          Any revenue KPI, dashboard or statutory report that sums Income must
+          filter on that flag.
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Install ──────────────────────────────────────────────── -->
+    <section id="install">
+      <div class="section-title">
+        <div class="icon-wrap ic-teal">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        Install
+      </div>
+      <p class="section-subtitle">Two bench commands. Everything else is idempotent and re-runs on migrate.</p>
+
+      <table class="nav-table">
+        <tr><td style="width:52%"><span class="path">bench get-app inter_branch</span></td><td>Fetch the app into the bench (source supplied by Enfono Technologies)</td></tr>
+        <tr><td><span class="path">bench --site &lt;site&gt; install-app inter_branch</span></td><td>Install on the site</td></tr>
+        <tr><td><span class="path">bench --site &lt;site&gt; migrate</span></td><td>Re-applies custom fields, the Branch dimension and parent account groups</td></tr>
+      </table>
+
+      <div class="info-box green">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <div>
+          Install and migrate create: the <strong>Branch</strong> Accounting
+          Dimension (with its <code>branch</code> columns on the accounting and
+          stock child tables), the Inter Branch Settings single doc, and the
+          inter-branch parent account groups for every enabled company. All of it
+          is safe to re-run.
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Settings ─────────────────────────────────────────────── -->
+    <section id="settings">
+      <div class="section-title">
+        <div class="icon-wrap ic-indigo">
+          <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6 1.65 1.65 0 0 0 10 3.09V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.36.44.63.82.75H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        Step 1 — Inter Branch Settings
+      </div>
+      <p class="section-subtitle">Desk → search <em>Inter Branch Settings</em>. One row per company, plus site-wide behaviour.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-left"><div class="step-num" style="background:#eff6ff;color:#1d4ed8;">1</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <h3>Add a company row</h3>
+            <p>Nothing posts for a company that has no row here. Submitting an inter-branch document on an unlisted company is refused with <em>Company Not Configured</em>.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-num" style="background:#fffbeb;color:#92400e;">2</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <h3>Set the Cut-over Date</h3>
+            <p>Journal Entries dated before it are left alone by the auto-injector. <strong>A blank date keeps the automatic posting layer off</strong> for that company — the safe default while you configure the rest. Manually created Stock Transfers and Service Settlements still post.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-num" style="background:#f0fdf4;color:#166534;">3</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <h3>Turn on Enforce Branch Dimension — last</h3>
+            <p>Do this once every warehouse is mapped. It marks Branch mandatory for Balance Sheet and P&amp;L accounts at the GL-posting layer, which is what makes branch statements trustworthy — and what blocks postings that would be untraceable.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin:24px 0 6px;">Company row fields</h3>
+      <table class="field-table">
+        <thead><tr><th style="width:32%">Field</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td class="field-name">Company <span class="field-req">Required</span></td><td>The company this row configures.</td></tr>
+          <tr><td class="field-name">Enabled</td><td>Off = inter-branch posting is refused for this company.</td></tr>
+          <tr><td class="field-name">Cut-over Date</td><td>Blank = the automatic Journal Entry layer stays off for this company.</td></tr>
+          <tr><td class="field-name">Bridge Branch</td><td>Counterparty used when a Journal Entry touches three or more branches.</td></tr>
+          <tr><td class="field-name">Enforce Branch Dimension</td><td>Branch becomes mandatory for BS and P&amp;L GL entries on this company.</td></tr>
+          <tr><td class="field-name">Auto-create Branch Account Heads</td><td>Creates the Due from / Due to leaves when a branch has none configured, and writes them back onto the branch's configuration.</td></tr>
+          <tr><td class="field-name">Receivable / Payable Parent Group</td><td>Group accounts the leaves are created under. Blank resolves to Current Assets / Current Liabilities.</td></tr>
+          <tr><td class="field-name">Service Recovered / Charged Account</td><td>Company-level recharge heads. A branch configuration can override either one.</td></tr>
+          <tr><td class="field-name">Default Target Warehouse</td><td>Pre-filled on new stock transfers.</td></tr>
+          <tr><td class="field-name">Transfer Price List</td><td>When set, transfers price from it instead of valuation. Leave blank to transfer at valuation — a price list moves margin between branches.</td></tr>
+          <tr><td class="field-name">Create Delivery Note when Customer is set</td><td>Only with this on does a transfer carrying a Customer also raise a Delivery Note.</td></tr>
+          <tr><td class="field-name">Default Taxes and Charges Template</td><td>Applied to that Delivery Note.</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:15px;font-weight:700;margin:24px 0 6px;">Site-wide behaviour switches</h3>
+      <table class="field-table">
+        <thead><tr><th style="width:32%">Field</th><th>Default</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td class="field-name">Enable Inter-Branch Postings</td><td>On</td><td>Master switch. Off = nothing in this app posts.</td></tr>
+          <tr><td class="field-name">Handle Direct Stock Entries</td><td>On</td><td>Posts a companion Journal Entry for cross-branch <em>Material Transfer</em> Stock Entries created outside this app.</td></tr>
+          <tr><td class="field-name">Set Branch from Warehouse</td><td>On</td><td>Fills each stock row's Branch from the warehouse mapping.</td></tr>
+          <tr><td class="field-name">Warehouse Overrides Chosen Branch</td><td>On</td><td>Replaces a row's Branch with the one mapped to its warehouse, and warns the user.</td></tr>
+          <tr><td class="field-name">Propagate Header Branch to Items</td><td>On</td><td>Copies the header Branch into rows still blank, so dimension-filtered reports do not drop them.</td></tr>
+          <tr><td class="field-name">Roles Exempt from Branch Auto-correction</td><td>System Manager, Stock Manager</td><td>One role per line. Users holding any of them keep the Branch they picked.</td></tr>
+          <tr><td class="field-name">Account Naming</td><td>—</td><td>Prefixes and labels used when heads are auto-created: <em>Due from</em>, <em>Due to</em>, <em>Inter-Branch Receivable</em>, <em>Inter-Branch Payable</em>, <em>… Service Recovered</em>, <em>… Service Charged</em>.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Branch configuration ─────────────────────────────────── -->
+    <section id="branch-config">
+      <div class="section-title">
+        <div class="icon-wrap ic-green">
+          <svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        </div>
+        Step 2 — Inter Branch Configuration
+      </div>
+      <p class="section-subtitle">One record per Branch, named after the branch. This is where warehouses become branches.</p>
+
+      <table class="field-table">
+        <thead><tr><th style="width:32%">Field</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td class="field-name">Branch <span class="field-req">Required</span></td><td>The record is named after it — one configuration per branch.</td></tr>
+          <tr><td class="field-name">Company <span class="field-req">Required</span></td><td>The company this branch trades under. Cannot be changed once account heads, warehouses or cost centres are set.</td></tr>
+          <tr><td class="field-name">Disabled</td><td>Excludes the branch from warehouse resolution and posting.</td></tr>
+          <tr><td class="field-name">Branch Short Code</td><td>Used in generated account names. Falls back to the branch name.</td></tr>
+          <tr><td class="field-name">Due-from Account (Asset)</td><td>Debited on the counterparty branch when this branch owes it. <span class="field-auto">Auto-created</span> if blank.</td></tr>
+          <tr><td class="field-name">Due-to Account (Liability)</td><td>Credited on the counterparty branch when this branch is owed. <span class="field-auto">Auto-created</span> if blank.</td></tr>
+          <tr><td class="field-name">Service Recovered / Charged Account</td><td>Overrides the company defaults for this branch.</td></tr>
+          <tr><td class="field-name">Warehouses</td><td><strong>The mapping everything else depends on.</strong> A warehouse not listed on any branch cannot be transferred from or to.</td></tr>
+          <tr><td class="field-name">Default Cost Center / Cost Centers</td><td>Cost centre stamped on this branch's auto-posted Journal Entry legs and on Delivery Notes.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box blue">
+        <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <div>
+          Adding a <strong>Branch</strong> on a site with exactly one enabled
+          company creates its configuration stub automatically. With more than one
+          company, you get a reminder instead — which company a branch belongs to
+          is a human decision.
+        </div>
+      </div>
+
+      <div class="callout blue">
+        <h4>One Branch, one Company</h4>
+        A Branch belongs to exactly one Company. A transfer or settlement on
+        company Y whose branch is configured for company X is refused up front.
+        If the same physical branch trades under two companies, create a Branch
+        per company (<em>Riyadh — Acme</em>, <em>Riyadh — Globex</em>) and
+        configure each separately.
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Preconditions ────────────────────────────────────────── -->
+    <section id="preconditions">
+      <div class="section-title">
+        <div class="icon-wrap ic-amber">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        Step 3 — Stock Account Rules
+      </div>
+      <p class="section-subtitle">Two conditions a stock transfer must meet, or it is refused at submit.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-left"><div class="step-num" style="background:#fef2f2;color:#991b1b;">1</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <h3>Perpetual Inventory must be on for the company</h3>
+            <p>Without it a Material Transfer writes no stock GL at all, so the companion Journal Entry would stand alone and both branches' trial balances would be out by the value of every transfer.</p>
+            <p><strong>Where:</strong> Company → Accounts → Enable Perpetual Inventory (and its stock accounts).</p>
+            <p>Service settlements are unaffected by this.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-num" style="background:#fef2f2;color:#991b1b;">2</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <h3>Each branch's warehouse needs its own stock account</h3>
+            <p>ERPNext writes a stock leg <em>per warehouse</em>, and only when the two warehouses resolve to <em>different</em> accounts. Two warehouses on one account produce a debit and a credit that merge to zero — nothing is written at all.</p>
+            <ul>
+              <li>Set <strong>Warehouse → Account</strong> per branch warehouse, or</li>
+              <li>give each one a parent warehouse that carries its own account.</li>
+            </ul>
+            <p>A warehouse with no account of its own falls back to its parent, then to the company's <strong>Default Inventory Account</strong>, then to any Stock account on the company — and that last fallback is what silently lands two branches on one shared account.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box red">
+        <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <div>
+          A transfer that fails either test is <strong>refused at submit</strong>,
+          with a table naming the offending warehouses. That is deliberate:
+          posting it would create a companion Journal Entry with nothing to offset
+          it.
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Stock transfer ───────────────────────────────────────── -->
+    <section id="stock-transfer">
+      <div class="section-title">
+        <div class="icon-wrap ic-blue">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M16 3h5v5"/><path d="M21 3l-7 7"/><path d="M8 21H3v-5"/><path d="M3 21l7-7"/></svg>
+        </div>
+        Inter Branch Stock Transfer
+      </div>
+      <p class="section-subtitle">Moves stock between two branches and books the obligation that movement creates.</p>
+
+      <div class="flow-diagram">
+        <span class="flow-node" style="background:#f1f5f9;color:#475569;">Draft</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node" style="background:#eff6ff;color:#1e40af;">Submitted</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node" style="background:#fffbeb;color:#92400e;">Return</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node" style="background:#fef2f2;color:#991b1b;">Cancelled</span>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-left"><div class="step-num" style="background:#eff6ff;color:#1d4ed8;">1</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <h3>Create the transfer</h3>
+            <ul>
+              <li><strong>Company</strong>, <strong>Posting Date</strong> — the series is <code>IBST-.YYYY.-</code></li>
+              <li><strong>Source</strong> and <strong>Target Warehouse</strong> — the branches are derived from them and shown read-only</li>
+              <li><strong>Items</strong> — item, qty, UOM. Rate defaults to the price list when one is configured, otherwise to valuation</li>
+              <li><strong>Customer</strong> (optional) — only when the target branch sells the goods onward</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-num" style="background:#eff6ff;color:#1d4ed8;">2</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <h3>Save — validation runs</h3>
+            <ul>
+              <li>Both warehouses must map to a branch, and the two branches must differ</li>
+              <li>Both branches must belong to the document's company</li>
+              <li>Every row needs a distinct source and target warehouse</li>
+              <li>Totals and valuation rates are recalculated</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-num" style="background:#f0fdf4;color:#166534;">3</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <h3>Submit — three documents are created</h3>
+            <ul>
+              <li><strong>Stock Entry</strong> (Material Transfer) for the physical move, with its GL legs re-tagged so the credit sits on the sending branch and the debit on the receiving one</li>
+              <li><strong>Journal Entry</strong> — the Due from / Due to pair, valued from the Stock Entry's real valuation rates</li>
+              <li><strong>Delivery Note</strong> — only when a Customer is set <em>and</em> the company row allows it; it ships out of the target warehouse</li>
+            </ul>
+            <p>Pre-submit checks: perpetual inventory, postable stock accounts, and enough stock in the warehouse the goods actually leave.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-num" style="background:#f5f3ff;color:#5b21b6;">4</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <h3>After submit — buttons on the form</h3>
+            <ul>
+              <li><strong>View →</strong> Stock Entry / Journal Entry / Delivery Note</li>
+              <li><strong>Create → Return</strong> — drafts a return for whatever is still returnable</li>
+              <li><strong>View → Returns</strong> — item-wise transferred / returned / remaining breakdown</li>
+              <li><strong>Create Journal Entry</strong> — appears only when the obligation was not posted (usually a zero valuation at submit time). Fix the rates, then use it</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin:24px 0 6px;">Key fields</h3>
+      <table class="field-table">
+        <thead><tr><th style="width:30%">Field</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="field-name">Company <span class="field-req">Required</span></td><td>Must have a row in Inter Branch Settings.</td></tr>
+          <tr><td class="field-name">Source / Target Warehouse <span class="field-req">Required</span></td><td>Filtered to non-group warehouses of the company.</td></tr>
+          <tr><td class="field-name">Source / Target Branch</td><td><span class="field-auto">Auto</span> resolved from the warehouse mapping.</td></tr>
+          <tr><td class="field-name">Items → Rate</td><td>What you typed → price list → valuation, in that order.</td></tr>
+          <tr><td class="field-name">Total Qty / Total Amount</td><td><span class="field-auto">Auto</span> — the amount is re-synced from the submitted Stock Entry.</td></tr>
+          <tr><td class="field-name">Stock Entry / Journal Entry / Delivery Note</td><td><span class="field-auto">Auto</span> — links written on submit.</td></tr>
+          <tr><td class="field-name">Status</td><td><span class="field-auto">Auto</span> — Draft, Submitted, Return, Cancelled.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Returns ──────────────────────────────────────────────── -->
+    <section id="returns">
+      <div class="section-title">
+        <div class="icon-wrap ic-amber">
+          <svg viewBox="0 0 24 24" stroke-width="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+        </div>
+        Returns &amp; Cancellation
+      </div>
+      <p class="section-subtitle">Sending stock back, and undoing a transfer that should not have happened.</p>
+
+      <table class="field-table">
+        <thead><tr><th style="width:26%">Action</th><th>What happens</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="field-name">Create → Return</td>
+            <td>Drafts a new transfer with <em>Is Return</em> set and <em>Return Against</em> pointing at the original, pre-filled with the quantities still returnable. Goods move in the opposite direction; the obligation is booked the opposite way round.</td>
+          </tr>
+          <tr>
+            <td class="field-name">Partial returns</td>
+            <td>Allowed and cumulative — a return can never exceed what is left. Only one draft return per original at a time.</td>
+          </tr>
+          <tr>
+            <td class="field-name">Returning a return</td>
+            <td>Refused.</td>
+          </tr>
+          <tr>
+            <td class="field-name">Cancel</td>
+            <td>Cascades in reverse order of creation: companion Journal Entry → Delivery Note → Stock Entry, then the transfer is marked Cancelled. A submitted return can be cancelled on its own; the original's link to it is released first.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box amber">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Cancel the transfer, not its Stock Entry or Journal Entry directly —
+        the cascade only runs from the transfer.
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Service settlement ───────────────────────────────────── -->
+    <section id="service">
+      <div class="section-title">
+        <div class="icon-wrap ic-purple">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        Inter Branch Service Settlement
+      </div>
+      <p class="section-subtitle">One branch did work for another. Series <code>IBSS-.YYYY.-</code>.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-left"><div class="step-num" style="background:#f5f3ff;color:#5b21b6;">1</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <h3>Pick the two branches</h3>
+            <p><strong>Performing Branch</strong> did the work and carries the cost today. <strong>Receiving Branch</strong> benefited and should carry it. They must differ, and both must belong to the document's company.</p>
+            <p>The recharge accounts are previewed onto the form as soon as both are picked, and frozen onto the document on save so a later default change cannot rewrite history.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-num" style="background:#f5f3ff;color:#5b21b6;">2</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <h3>Choose a pricing basis</h3>
+            <ul>
+              <li><strong>Flat Amount</strong> — one figure in the header; item rows are informational</li>
+              <li><strong>Hours × Rate</strong> — per row: <code>hours × rate</code></li>
+              <li><strong>Cost Plus Percentage</strong> — per row: <code>cost × (1 + mark-up%)</code>, using the row's mark-up or the header default</li>
+            </ul>
+            <p>The total must be greater than zero.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-num" style="background:#f0fdf4;color:#166534;">3</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <h3>Submit — one four-leg Journal Entry</h3>
+            <p>Recovered (Income, performer) · Due from receiver (Asset, performer) · Charged (Expense, receiver) · Due to performer (Liability, receiver). The link appears on the document; cancelling the settlement cancels that Journal Entry.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin:24px 0 6px;">Service row fields</h3>
+      <table class="field-table">
+        <thead><tr><th style="width:30%">Field</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr><td class="field-name">Service Description <span class="field-req">Required</span></td><td>All bases</td></tr>
+          <tr><td class="field-name">Item, From / To Date</td><td>Documentation only</td></tr>
+          <tr><td class="field-name">Hours, Rate per Hour</td><td>Hours × Rate</td></tr>
+          <tr><td class="field-name">Cost Incurred, Mark-up (%)</td><td>Cost Plus Percentage</td></tr>
+          <tr><td class="field-name">Amount</td><td><span class="field-auto">Auto</span> — computed from the basis</td></tr>
+          <tr><td class="field-name">Cost Center</td><td>Stamped on the row's share of the posting</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Automatic postings ───────────────────────────────────── -->
+    <section id="automatic">
+      <div class="section-title">
+        <div class="icon-wrap ic-rose">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg>
+        </div>
+        Automatic Postings
+      </div>
+      <p class="section-subtitle">Three things the app does to documents you did not create through it.</p>
+
+      <div class="report-cards">
+        <div class="report-card">
+          <div class="report-icon ic-blue">
+            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+          </div>
+          <h3>Branch tagging on stock documents</h3>
+          <p>Stock Entry, Stock Reconciliation, Delivery Note, Purchase Receipt, Sales Invoice, Purchase Invoice and Material Request get each row's Branch filled from the warehouse mapping, then the header branch copied into rows still blank.</p>
+          <p>The warehouse wins over a branch picked by hand — with an on-screen notice — unless the user holds a trusted role.</p>
+        </div>
+
+        <div class="report-card">
+          <div class="report-icon ic-teal">
+            <svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          </div>
+          <h3>Direct cross-branch Stock Entries</h3>
+          <p>A <em>Material Transfer</em> Stock Entry created outside this app gets the same companion Journal Entry on submit, and it is cancelled with the entry.</p>
+          <p>Skipped — and logged — when the entry spans several branch pairs, when perpetual inventory is off, or when the warehouses would write no stock GL. Repacks and manufacturing entries are never touched.</p>
+        </div>
+
+        <div class="report-card">
+          <div class="report-icon ic-indigo">
+            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <h3>Multi-branch Journal Entries</h3>
+          <p>A manual Journal Entry touching <strong>two</strong> branches is balanced automatically: the Due from / Due to legs are injected from the per-branch imbalance.</p>
+          <p><strong>Three or more</strong> is ambiguous — who owes whom cannot be inferred — so the company's <strong>Bridge Branch</strong> becomes the counterparty for all the others. The entry is rejected if the bridge is not configured, or not present in the entry.</p>
+        </div>
+      </div>
+
+      <div class="info-box blue">
+        <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <div>
+          Injected legs are marked <strong>Auto-inserted Inter-Branch Leg</strong>
+          and carry the source document, so re-saving a Journal Entry rebuilds
+          them instead of stacking duplicates. Entries dated before the company's
+          cut-over date are left alone.
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Report ───────────────────────────────────────────────── -->
+    <section id="report">
+      <div class="section-title">
+        <div class="icon-wrap ic-green">
+          <svg viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        Inter Branch Reconciliation
+      </div>
+      <p class="section-subtitle">The one report to check before every close.</p>
+
+      <div class="report-cards">
+        <div class="report-card">
+          <div class="report-icon ic-green">
+            <svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          </div>
+          <h3>Branch × branch matrix</h3>
+          <p>Rows are the branch holding the balance, columns the counterparty. Healthy state: A→B and B→A net to zero, and the <strong>Unmatched</strong> column is zero on every row. A non-zero figure is shown in red.</p>
+          <div class="filters-label">Filters</div>
+          <span class="filter-tag">Company (required)</span>
+          <span class="filter-tag">From Date</span>
+          <span class="filter-tag">To Date</span>
+          <span class="filter-tag">Hide Branches With No Activity</span>
+        </div>
+      </div>
+
+      <div class="callout blue">
+        <h4>What a non-zero Unmatched means</h4>
+        A manual Journal Entry was posted to one side only, a companion entry was
+        cancelled without its source document, or a document is still mid-flight.
+        Balances are read from the GL against the account heads on Inter Branch
+        Configuration — renaming an account head does not drop it from the report.
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Roles ────────────────────────────────────────────────── -->
+    <section id="roles">
+      <div class="section-title">
+        <div class="icon-wrap ic-indigo">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        </div>
+        Roles &amp; Permissions
+      </div>
+      <p class="section-subtitle">Who can do what, out of the box.</p>
+
+      <table class="roles-table">
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Settings</th>
+            <th>Configuration</th>
+            <th>Stock Transfer</th>
+            <th>Service Settlement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>System Manager</strong></td>
+            <td class="perm-yes">Full</td>
+            <td class="perm-yes">Full</td>
+            <td class="perm-yes">Full + submit / cancel / amend</td>
+            <td class="perm-yes">Full + submit / cancel / amend</td>
+          </tr>
+          <tr>
+            <td><strong>Accounts Manager</strong></td>
+            <td class="perm-yes">Full</td>
+            <td class="perm-yes">Full</td>
+            <td class="perm-no">—</td>
+            <td class="perm-yes">Full + submit / cancel / amend</td>
+          </tr>
+          <tr>
+            <td><strong>Accounts User</strong></td>
+            <td class="perm-no">—</td>
+            <td>Read / write</td>
+            <td class="perm-no">—</td>
+            <td>Create, submit, cancel, amend</td>
+          </tr>
+          <tr>
+            <td><strong>Stock Manager</strong></td>
+            <td class="perm-no">—</td>
+            <td class="perm-no">—</td>
+            <td class="perm-yes">Full + submit / cancel / amend</td>
+            <td class="perm-no">—</td>
+          </tr>
+          <tr>
+            <td><strong>Stock User</strong></td>
+            <td class="perm-no">—</td>
+            <td class="perm-no">—</td>
+            <td>Create, submit, cancel, amend</td>
+            <td class="perm-no">—</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box amber" style="margin-top:16px;">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <strong>System Manager</strong> and <strong>Stock Manager</strong> are the
+        default trusted roles — their Branch choice on a stock document is never
+        auto-corrected from the warehouse. Change that list in Inter Branch Settings.
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Troubleshooting ──────────────────────────────────────── -->
+    <section id="troubleshooting">
+      <div class="section-title">
+        <div class="icon-wrap ic-rose">
+          <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        Troubleshooting
+      </div>
+      <p class="section-subtitle">Every refusal this app raises, and what to change.</p>
+
+      <table class="field-table">
+        <thead><tr><th style="width:32%">Message</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td class="field-name">Company Not Configured</td><td>Add a row for the company in Inter Branch Settings, and enable it.</td></tr>
+          <tr><td class="field-name">Inter-Branch Disabled</td><td>The master switch or the company row is off.</td></tr>
+          <tr><td class="field-name">Warehouse Not Mapped to Branch</td><td>Add the warehouse to the <em>Warehouses</em> table of the owning branch's Inter Branch Configuration.</td></tr>
+          <tr><td class="field-name">Branch Not Configured</td><td>Create an Inter Branch Configuration for that branch.</td></tr>
+          <tr><td class="field-name">Branch Belongs To Another Company</td><td>Pick a branch of this document's company, or create one. A branch belongs to exactly one company.</td></tr>
+          <tr><td class="field-name">Same Branch</td><td>Both warehouses resolve to one branch — use a plain Stock Entry.</td></tr>
+          <tr><td class="field-name">Perpetual Inventory Required</td><td>Enable Perpetual Inventory on the Company and set its stock accounts.</td></tr>
+          <tr><td class="field-name">Stock Account Not Postable</td><td>Give each branch warehouse its own stock account (or a parent warehouse that carries one). Both warehouses on one account write no GL at all.</td></tr>
+          <tr><td class="field-name">Insufficient Stock</td><td>The table names item, warehouse, required and available. On a return the checked warehouse is the target one.</td></tr>
+          <tr><td class="field-name">Return Quantity Exceeded</td><td>Only what is still unreturned can be sent back.</td></tr>
+          <tr><td class="field-name">Pending Return Exists</td><td>Submit or cancel the draft return first.</td></tr>
+          <tr><td class="field-name">Account Head Missing</td><td>Auto-creation is off for the company — set the Due-from / Due-to (or recharge) account on the branch configuration by hand.</td></tr>
+          <tr><td class="field-name">Bridge Branch Not Configured / Missing From Journal Entry</td><td>Set a Bridge Branch on the company row and make sure the entry has a line on it — or split the entry into two-branch Journal Entries.</td></tr>
+          <tr><td class="field-name">Nothing to Settle</td><td>A settlement's total must be greater than zero.</td></tr>
+          <tr><td class="field-name">Nothing to Reconcile</td><td>No branch account heads exist yet for the company — post one document, or set them on the configurations.</td></tr>
+          <tr><td class="field-name">Transfer submitted with no Journal Entry</td><td>Usually zero valuation at submit time. Fix the item rates, then use <strong>Create Journal Entry</strong> on the transfer.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box blue" style="margin-top:16px;">
+        <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <div>
+          Cases the app skips silently rather than blocking — a Stock Entry
+          spanning several branch pairs, a GL re-tag it cannot attribute — are
+          written to <strong>Error Log</strong> with the reason. Search it for
+          “Inter-branch”.
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Footer ───────────────────────────────────────────────── -->
+    <div style="text-align:center;color:#94a3b8;font-size:12px;padding-bottom:48px;">
+      <p>Inter Branch · Developed by <strong style="color:#64748b;">Enfono Technologies</strong></p>
+      <p style="margin-top:4px;">ERPNext v15+ · app <code>inter_branch</code> · proprietary</p>
+    </div>
+
+  </div><!-- /content-body -->
+</main>
+
+<!-- ── Sidebar active state on scroll ─────────────────────────── -->
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navItems.forEach(n => n.classList.remove('active'));
+        const active = document.querySelector(`.nav-item[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "naming_series:",
+ "creation": "2026-08-16 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_header",
+  "naming_series",
+  "company",
+  "amended_from",
+  "column_break_header",
+  "posting_date",
+  "status",
+  "section_break_branches",
+  "performing_branch",
+  "column_break_branches",
+  "receiving_branch",
+  "section_break_pricing",
+  "pricing_basis",
+  "flat_amount",
+  "column_break_pricing",
+  "default_markup_percentage",
+  "section_break_items",
+  "items",
+  "section_break_total",
+  "total_amount",
+  "section_break_accounts",
+  "service_recovered_account",
+  "column_break_accounts",
+  "service_charged_account",
+  "section_break_refs",
+  "journal_entry",
+  "column_break_refs",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_header",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "IBSS-.YYYY.-",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "IBSS-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Inter Branch Service Settlement",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_header",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "no_copy": 1,
+   "options": "Draft\nSubmitted\nCancelled",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_branches",
+   "fieldtype": "Section Break",
+   "label": "Branches"
+  },
+  {
+   "description": "Branch that did the work and carries the cost today.",
+   "fieldname": "performing_branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Performing Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_branches",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Branch that benefited and should carry the cost.",
+   "fieldname": "receiving_branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Receiving Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_pricing",
+   "fieldtype": "Section Break",
+   "label": "Pricing"
+  },
+  {
+   "default": "Flat Amount",
+   "fieldname": "pricing_basis",
+   "fieldtype": "Select",
+   "label": "Pricing Basis",
+   "options": "Flat Amount\nHours x Rate\nCost Plus Percentage",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.pricing_basis=='Flat Amount'",
+   "fieldname": "flat_amount",
+   "fieldtype": "Currency",
+   "label": "Flat Amount",
+   "options": "Company:company:default_currency"
+  },
+  {
+   "fieldname": "column_break_pricing",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.pricing_basis=='Cost Plus Percentage'",
+   "description": "Applied to item rows that leave Mark-up blank.",
+   "fieldname": "default_markup_percentage",
+   "fieldtype": "Float",
+   "label": "Default Mark-up (%)"
+  },
+  {
+   "fieldname": "section_break_items",
+   "fieldtype": "Section Break",
+   "label": "Services"
+  },
+  {
+   "depends_on": "eval:doc.pricing_basis!='Flat Amount'",
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Services",
+   "options": "Inter Branch Service Settlement Item"
+  },
+  {
+   "fieldname": "section_break_total",
+   "fieldtype": "Section Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_accounts",
+   "fieldtype": "Section Break",
+   "label": "Recharge Accounts"
+  },
+  {
+   "description": "Credited on the performing branch. Recharge, not turnover.",
+   "fieldname": "service_recovered_account",
+   "fieldtype": "Link",
+   "label": "Service Recovered Account (Income)",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_accounts",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Debited on the receiving branch.",
+   "fieldname": "service_charged_account",
+   "fieldtype": "Link",
+   "label": "Service Charged Account (Expense)",
+   "options": "Account"
+  },
+  {
+   "fieldname": "section_break_refs",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Link",
+   "label": "Journal Entry",
+   "no_copy": 1,
+   "options": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_refs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-08-16 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Inter Branch",
+ "name": "Inter Branch Service Settlement",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "performing_branch,receiving_branch,posting_date",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "company",
+ "track_changes": 1
+}

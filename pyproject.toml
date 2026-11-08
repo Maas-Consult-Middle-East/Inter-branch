@@ -1,0 +1,38 @@
+[project]
+name = "inter_branch"
+authors = [
+    { name = "Enfono Technologies", email = "info@enfono.com" }
+]
+description = "Inter-branch receivables, payables, stock transfers and service settlements for ERPNext"
+requires-python = ">=3.10"
+readme = "README.md"
+dynamic = ["version"]
+dependencies = []
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.bench.frappe-dependencies]
+frappe = ">=15.0.0,<17.0.0"
+erpnext = ">=15.0.0,<17.0.0"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "I", "UP", "B", "RUF"]
+ignore = [
+    "B017", # assertRaises(Exception)
+    "B023", # function definition does not bind loop variable
+    "E101", # indentation contains mixed spaces and tabs
+    "E402", # module level import not at top of file
+    "E501", # line too long
+    "F403", # can't detect undefined names from star imports
+    "RUF001", # ambiguous unicode
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "tab"
