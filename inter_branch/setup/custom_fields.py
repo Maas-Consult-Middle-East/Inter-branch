@@ -42,6 +42,18 @@ CUSTOM_FIELDS = {
 	"Journal Entry": SOURCE_FIELDS,
 	"Journal Entry Account": [
 		{
+			"fieldname": "custom_inter_company_account",
+			"fieldtype": "Link",
+			"label": "Related Company Account",
+			"options": "Account",
+			"print_hide": 1,
+			"insert_after": "account",
+			"description": (
+				"Only for a Related Party Account line: the Related Company's account the mirror "
+				"entry books against. Leave blank to use this entry's other lines on the same side."
+			),
+		},
+		{
 			"fieldname": "custom_auto_inserted",
 			"fieldtype": "Check",
 			"label": "Auto-inserted Inter-Branch Leg",

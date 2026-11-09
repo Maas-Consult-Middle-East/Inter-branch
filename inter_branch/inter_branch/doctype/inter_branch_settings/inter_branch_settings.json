@@ -9,6 +9,8 @@
   "enabled",
   "section_break_companies",
   "companies",
+  "section_break_related_parties",
+  "related_parties",
   "section_break_behaviour",
   "handle_direct_stock_entry",
   "auto_tag_branch_from_warehouse",
@@ -42,6 +44,18 @@
    "fieldtype": "Table",
    "label": "Companies",
    "options": "Inter Branch Company Setting"
+  },
+  {
+   "fieldname": "section_break_related_parties",
+   "fieldtype": "Section Break",
+   "label": "Inter-Company Related Parties",
+   "description": "When a submitted Journal Entry debits or credits a Related Party Account, a mirror Journal Entry is posted in the Related Company against its own Related Party Account for this Company. Configure both directions: one row per Company."
+  },
+  {
+   "fieldname": "related_parties",
+   "fieldtype": "Table",
+   "label": "Related Party Accounts",
+   "options": "Inter Company Related Party"
   },
   {
    "fieldname": "section_break_behaviour",
@@ -134,7 +148,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-08-16 00:00:00.000000",
+ "modified": "2026-11-09 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Inter Branch",
  "name": "Inter Branch Settings",

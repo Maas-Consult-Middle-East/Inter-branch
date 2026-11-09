@@ -37,7 +37,13 @@ _STOCK_BRANCH_EVENTS = {
 
 doc_events = {
 	"Journal Entry": {
-		"validate": "inter_branch.core.journal.auto_inject_inter_branch_legs",
+		"before_validate": "inter_branch.core.inter_company.split_related_party_allocations",
+		"validate": [
+			"inter_branch.core.journal.auto_inject_inter_branch_legs",
+			"inter_branch.core.inter_company.validate_related_party_legs",
+		],
+		"on_submit": "inter_branch.core.inter_company.post_related_party_mirrors",
+		"on_cancel": "inter_branch.core.inter_company.cancel_related_party_mirrors",
 	},
 	"Branch": {
 		"after_insert": "inter_branch.core.branch.on_branch_insert",

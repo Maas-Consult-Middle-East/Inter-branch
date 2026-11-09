@@ -138,8 +138,15 @@ def _add_leg(
 	source_docname: str,
 	cost_center: str | None = None,
 	remark: str | None = None,
+	party_type: str | None = None,
+	party: str | None = None,
+	auto: bool = True,
 ) -> None:
-	"""Append one leg. `side` is "debit" or "credit"; the caller balances the set."""
+	"""Append one leg. `side` is "debit" or "credit"; the caller balances the set.
+
+	`auto=False` keeps the source link but not the auto-inserted flag, so the
+	inter-branch injection does not strip the leg when the entry is validated again.
+	"""
 	if side not in ("debit", "credit"):
 		raise ValueError(f"side must be 'debit' or 'credit', got: {side!r}")
 
@@ -149,7 +156,7 @@ def _add_leg(
 		"account_currency": currency,
 		"exchange_rate": 1,
 		"branch": branch,
-		AUTO_FLAG: 1,
+		AUTO_FLAG: 1 if auto else 0,
 		SOURCE_DT: source_doctype,
 		SOURCE_DN: source_docname,
 	}
@@ -157,6 +164,9 @@ def _add_leg(
 		row["cost_center"] = cost_center
 	if remark:
 		row["user_remark"] = remark
+	if party_type and party:
+		row["party_type"] = party_type
+		row["party"] = party
 
 	if side == "debit":
 		row["debit_in_account_currency"] = amount
@@ -324,10 +334,16 @@ def find_companion_jes(source_doctype: str, source_docname: str, docstatus: int 
 	return [row[0] for row in rows]
 
 
-def cancel_companion_jes(source_doctype: str, source_docname: str) -> list[str]:
-	"""Cancel every submitted companion JE for a source document."""
+def cancel_companion_jes(source_doctype: str, source_docname: str, exclude: str | None = None) -> list[str]:
+	"""Cancel every submitted companion JE for a source document.
+
+	`exclude` keeps a source Journal Entry from matching itself: its own
+	auto-injected inter-branch legs carry its name as their source.
+	"""
 	cancelled = []
 	for name in find_companion_jes(source_doctype, source_docname):
+		if name == exclude:
+			continue
 		je = frappe.get_doc("Journal Entry", name)
 		je.flags.skip_inter_branch_injection = True
 		je.flags.ignore_permissions = True
